@@ -1,0 +1,101 @@
+1. STRUCTURI
+   In primul rand, mi-am definit o serie de structuri.Pe scurt:
+   *structura nod-defineste un lant dublu inlantuit
+   *structura banda-este utilizata pentru a reprezenta o banda impreuna cu un
+   deget, care se poate muta la stanga sau la dreapta pe aceasta banda
+   *structura element-este utilizata pentru a defini un element dintr-o coada
+   sau o stiva
+   *structura element_stiva- este utilizata pentru a defini un element dintr-o
+   stiva
+
+2. FUNCTII/OPERATII
+   Am creat cateva functii pentru stiva, prin care pot sa adaug sau sa elimin
+   un element in varful stivei, sau sa elimin toate elementele.In cadrul
+   functiei adauga_stiva, creez o variabila noua de tip "element_stiva", prin
+   alocarea de memorie.Se atribuie pozitia nodului indicata ca argument in
+   campul pozitie al noului element.In final, se actualizeaza adresa varfului
+   stivei pentru a indica elementul nou adaugat si se mărește dimensiunea
+   stivei cu 1. In cadrul functiei sterge_din_stiva,se creeaza o variabila de
+   tip "element_stiva" pentru a pastra adresa elementului din varful stivei.
+   Apoi, verific daca stiva are cel putin un element(cu dimensiunea>0) si
+   actualizez adresa varfului stivei.In functie goleste_stiva se apeleaza
+   functia anterioara de mai multe ori pana cand dimensiunea stivei devine 0.
+
+/_operatii UPDATE_/
+Functiile move_left si move_right primesc aceiasi parametrii(banda B, coada C,
+stiva U, fisierul de intrare r si fisierul de iesire w); in move_left se
+verifica daca degetul are un nod precedent diferit de santinela si, in caz
+afirmativ, adauga nodul curent in stiva prin apelul functiei adauga_stiva si
+muta degetul la stanga prin actualizarea pointerului deget cu nodul precedent.
+Functia move_right verifica daca degetul are un urmator, iar in caz contrat,
+adauga un nod santinela in continuarea degetului. Apoi, functia adauga nodul
+curent in stiva prin apelarea functiei adauga_stiva si muta degetul la dreapta.
+
+Functiile move_right/left_char primesc un caracter c si o banda B si se muta
+degetul la dreapta/stanga pana cand se intalneste caracterul c, mutandu-se pe
+caracterul respectiv atunci cand este gasit.In functia right, daca degetul
+ajunge la capatul benzii fara a gasi caracterul, este adaugat un nou nod cu
+caracterul # in continuarea degetului si este mutat pe acesta, iar in funtia
+left, daca degetul ajunge la santinela fara a gasi caracterul, este afisat
+un mesaj de eroare.
+
+Functia write_char are rolul de a scrie caracterul c in pozitia curenta a
+degetului de pe banda B. Inainte de a face acest lucru, functia goleste stivele
+U si R, deoarece scrierea unui caracter anuleaza orice actiune anterioara de
+tip undo/redo.
+
+Functiile insert_right/left adauga un caracter pe banda de degetul curent,
+respectiv in stanga sau in dreapta acestuia. In functia left, se verifica daca
+degetul nu se afla la inceputul benzii, adica in stanga santinelei, altfel se
+afiseaza mesajul de eroare si se returneaza. Se creeaza un nod nou care contine
+caracterul dat ca parametru, iar acesta este inserat intre nodurile precedent
+si degetul curent. Apoi, degetul curent este mutat pe noul nod inserat. In
+functia right, se creeaza un nou nod, iar acesta este inserat intre nodul
+degetul curent si nodul urmator(daca exista), actualizandu se legaturile intre
+noduri. La final, dgetul curent este mutat pe noul nod inserat.
+
+/_operatii QUERY_/
+Functia show_current afiseaza caracterul de la pozitia curenta a degetului,
+iar functia show_banda afiseaza intreaga banda, impreuna cu pozitia curenta a
+degetului marcata cu " | | ". Daca nodul curent este nodul la care se afla
+degetul, se afiseaza caractrul intre "|" pentru a marca pozitia degetului,
+iar la final se afiseaza un caracter newline.
+
+/_operatia EXECUTE_/
+Functia execute implementeaza executia comenzilor din coada C, apeland functiile
+corespunzatoare in functie de tipul comenzii. Dupa executarea comenzii, se
+elimina comanda din coada prin mutarea pointerului primul catre urmatorul
+element si se elibereaza memoria alocata pentru elementul curent.
+
+/_functii pentru eliberare memorie_/
+Functia elibereaza_banda elibereaza memoria alocata pentru fiecare nod din
+banda, inclusiv celula santinela si apoi elibereaza memoria alocata pentru
+banda B.
+
+Functia elibereaza_stiva elibereaza memoria alocata pentru toate elementele
+stivei.Folosesc un pointer auxiliar p pentru a tine evidenta elementului
+curent si pentru a putea elibera memoria alocata pentru acesta, eliberandu-se
+la final memoria alocata pentru structura stivei.
+
+Functia elibereaza_coada se foloseste asemanator cu functia elibereaza_stiva,
+la final eliberandu-se memoria alocata pentru structura cozii.
+
+3. MAIN
+   In fuctia main, incep prin a aloca dinamic memorie pentru banda si coada,
+   initializand coada cu primul si ultimul, fiind nule.De asemenea, banda este
+   initializata cu o santinela goala, avand nodul 2 alocat, pe care degetul
+   B->deget il va indica. Apoi, sunt create doua stive pentru undo si redo,
+   initializate cu varf care este NULL si dimensiunea 0.
+   Se citeste din fisierul de intrare numarul de operatii n si se parcurge
+   fiecare operatie din fisier, executate pe rand.Daca operatia ete move_left/
+   right, aceasta este adaugata la coada c cu caracterul #, iar in caz contrar,
+   daca este o operatie ce necesita un caracter suplimentar, se citeste din
+   fisier si se adauga la coada C impreuna cu operatia. Daca operatia este undo,
+   atunci se verifica daca stiva de undo are cel putin un element si se executa
+   actiunea undo, adaugand nodului curent in stiva de redo si mutand degetul pe
+   ultimul nod adaugat in stiva de undo(idem pentru redo).Dupa ce sunt executate
+   toate operatiile, se inchid toate fisierele si se elibereaza memoria alocata
+   pentru banda, coada si stivele undo si redo.
+
+Punctaj acordat pe checker-ul local:100/100
+Valgrind:20/20
